@@ -1,36 +1,42 @@
-
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { toast } from "sonner";
 import { LockIcon, LogInIcon } from "lucide-react";
 
 export function LoginForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [apiUrl, setApiUrl] = useState("");
+  const [apiKey, setApiKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!username || !password) {
-      toast.error("Please enter both username and password");
+
+    if (!apiUrl || !apiKey) {
+      toast.error("Please enter both API URL and API Key");
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
-      const success = await login(username, password);
-      
+      const success = await login(apiUrl, apiKey);
+
       if (success) {
         toast.success("Login successful");
       } else {
-        toast.error("Invalid username or password");
+        toast.error("Invalid API URL or API Key");
       }
     } catch (error) {
       toast.error("An error occurred during login");
@@ -46,7 +52,9 @@ export function LoginForm() {
         <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10">
           <LockIcon className="w-6 h-6 text-primary" />
         </div>
-        <CardTitle className="text-2xl font-bold text-center">Welcome Back</CardTitle>
+        <CardTitle className="text-2xl font-bold text-center">
+          Welcome Back
+        </CardTitle>
         <CardDescription className="text-center">
           Enter your credentials to access the dashboard
         </CardDescription>
@@ -54,34 +62,35 @@ export function LoginForm() {
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="apiUrl">API URL</Label>
             <Input
-              id="username"
-              type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="apiUrl"
+              type="url"
+              placeholder="Enter your API URL"
+              value={apiUrl}
+              onChange={(e) => setApiUrl(e.target.value)}
               required
               className="transition-all duration-200 ease-in-out"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="apiKey">API Key</Label>
             <Input
-              id="password"
+              id="apiKey"
               type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="off"
+              placeholder="Enter your API Key"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
               required
               className="transition-all duration-200 ease-in-out"
             />
           </div>
         </CardContent>
         <CardFooter>
-          <Button 
-            type="submit" 
-            className="w-full transition-all duration-200 ease-in-out" 
+          <Button
+            type="submit"
+            className="w-full transition-all duration-200 ease-in-out"
             disabled={isLoading}
           >
             {isLoading ? (

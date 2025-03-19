@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
@@ -10,7 +9,20 @@ import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { getSubmissions } from "@/lib/api";
 import { Form, SubmissionParams } from "@/types/api";
-import { ArrowLeftIcon, FileTextIcon, PlusIcon, RefreshCwIcon, SearchIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  FileTextIcon,
+  PlusIcon,
+  RefreshCwIcon,
+  SearchIcon,
+} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Submissions = () => {
   const { isAuthenticated } = useAuth();
@@ -18,10 +30,10 @@ const Submissions = () => {
   const [submissions, setSubmissions] = useState<Form[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [limit, setLimit] = useState(10);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
-    limit: 10,
     total: 0,
   });
 
@@ -29,21 +41,22 @@ const Submissions = () => {
     if (!isAuthenticated) {
       navigate("/");
     } else {
-      fetchSubmissions({ page: 1, limit: pagination.limit });
+      fetchSubmissions({ page: 1, limit: limit, search: searchTerm });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, limit, searchTerm]);
 
   const fetchSubmissions = async (params: SubmissionParams) => {
     setIsLoading(true);
     try {
       const response = await getSubmissions(params);
+      console.log(response);
       setSubmissions(response.data);
       setPagination({
         currentPage: response.meta.currentPage,
         totalPages: response.meta.totalPages,
-        limit: response.meta.limit,
         total: response.meta.total,
       });
+      setLimit(response.meta.limit);
     } catch (error) {
       console.error("Failed to fetch submissions:", error);
       toast.error("Failed to load submissions");
@@ -53,14 +66,14 @@ const Submissions = () => {
   };
 
   const handlePageChange = (page: number) => {
-    fetchSubmissions({ page, limit: pagination.limit });
+    fetchSubmissions({ page, limit: limit });
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, you'd implement search on the server side
     // For now, we'll just refresh the data
-    fetchSubmissions({ page: 1, limit: pagination.limit });
+    fetchSubmissions({ page: 1, limit: limit, search: searchTerm });
   };
 
   const columns = [
@@ -91,7 +104,9 @@ const Submissions = () => {
         <div className="text-sm">
           <div>{new Date(submission.createdAt).toLocaleDateString()}</div>
           <div className="text-gray-500">
-            {formatDistanceToNow(new Date(submission.createdAt), { addSuffix: true })}
+            {formatDistanceToNow(new Date(submission.createdAt), {
+              addSuffix: true,
+            })}
           </div>
         </div>
       ),
@@ -136,7 +151,10 @@ const Submissions = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <form onSubmit={handleSearch} className="flex w-full max-w-sm items-center space-x-2">
+          <form
+            onSubmit={handleSearch}
+            className="flex w-full max-w-sm items-center space-x-2"
+          >
             <Input
               type="search"
               placeholder="Search submissions..."
@@ -149,15 +167,40 @@ const Submissions = () => {
               <span className="sr-only">Search</span>
             </Button>
           </form>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchSubmissions({ page: pagination.currentPage, limit: pagination.limit })}
-            disabled={isLoading}
-          >
-            <RefreshCwIcon className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                fetchSubmissions({
+                  page: pagination.currentPage,
+                  limit: limit,
+                })
+              }
+              disabled={isLoading}
+            >
+              <RefreshCwIcon className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+            <Select
+              value={limit.toString()}
+              onValueChange={(value) => {
+                setLimit(parseInt(value));
+              }}
+            >
+              <SelectTrigger className="w-24">
+                <SelectValue placeholder="Select a limit" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <DataTable

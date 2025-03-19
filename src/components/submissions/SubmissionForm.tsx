@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,8 +5,21 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { CreateFormDto } from "@/types/api";
 import { createSubmission } from "@/lib/api";
 import { toast } from "sonner";
@@ -16,12 +28,12 @@ import { ArrowLeftIcon, Loader2Icon, Send } from "lucide-react";
 export function SubmissionForm() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [formData, setFormData] = useState<CreateFormDto>({
     fullLegalName: "",
     isChildAbuseContent: false,
     removeChildAbuseContent: true,
-    countryOfResidence: "",
+    countryOfResidence: "Deutschland",
     CompanyName: "",
     CompanyYouRepresent: "",
     email: "",
@@ -35,7 +47,10 @@ export function SubmissionForm() {
     signature: "",
   });
 
-  const handleInputChange = (field: keyof CreateFormDto, value: string | boolean) => {
+  const handleInputChange = (
+    field: keyof CreateFormDto,
+    value: string | boolean
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -71,7 +86,7 @@ export function SubmissionForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (
       !formData.fullLegalName ||
@@ -88,16 +103,20 @@ export function SubmissionForm() {
       toast.error("Please fill all required fields");
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const response = await createSubmission(formData);
       toast.success("Submission created successfully");
       navigate(`/submission/${response.id}`);
     } catch (error) {
       console.error("Failed to create submission:", error);
-      toast.error("Failed to create submission");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to create submission");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -132,7 +151,9 @@ export function SubmissionForm() {
                 <Input
                   id="fullLegalName"
                   value={formData.fullLegalName}
-                  onChange={(e) => handleInputChange("fullLegalName", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("fullLegalName", e.target.value)
+                  }
                   placeholder="Enter your full legal name"
                   required
                 />
@@ -149,11 +170,16 @@ export function SubmissionForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="countryOfResidence">Country of Residence *</Label>
+                <Label htmlFor="countryOfResidence">
+                  Country of Residence *
+                </Label>
                 <Input
                   id="countryOfResidence"
+                  disabled
                   value={formData.countryOfResidence}
-                  onChange={(e) => handleInputChange("countryOfResidence", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("countryOfResidence", e.target.value)
+                  }
                   placeholder="Enter your country of residence"
                   required
                 />
@@ -163,17 +189,23 @@ export function SubmissionForm() {
                 <Input
                   id="CompanyName"
                   value={formData.CompanyName}
-                  onChange={(e) => handleInputChange("CompanyName", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("CompanyName", e.target.value)
+                  }
                   placeholder="Enter your company name"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="CompanyYouRepresent">Company You Represent *</Label>
+                <Label htmlFor="CompanyYouRepresent">
+                  Company You Represent *
+                </Label>
                 <Input
                   id="CompanyYouRepresent"
                   value={formData.CompanyYouRepresent}
-                  onChange={(e) => handleInputChange("CompanyYouRepresent", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("CompanyYouRepresent", e.target.value)
+                  }
                   placeholder="Enter the company you represent"
                   required
                 />
@@ -183,7 +215,9 @@ export function SubmissionForm() {
                 <Input
                   id="signature"
                   value={formData.signature}
-                  onChange={(e) => handleInputChange("signature", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("signature", e.target.value)
+                  }
                   placeholder="Enter your signature"
                   required
                 />
@@ -237,7 +271,9 @@ export function SubmissionForm() {
                     handleInputChange("isChildAbuseContent", !!checked)
                   }
                 />
-                <Label htmlFor="isChildAbuseContent">Is Child Abuse Content</Label>
+                <Label htmlFor="isChildAbuseContent">
+                  Is Child Abuse Content
+                </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -247,7 +283,9 @@ export function SubmissionForm() {
                     handleInputChange("removeChildAbuseContent", !!checked)
                   }
                 />
-                <Label htmlFor="removeChildAbuseContent">Remove Child Abuse Content Anonymously</Label>
+                <Label htmlFor="removeChildAbuseContent">
+                  Remove Child Abuse Content Anonymously
+                </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -257,7 +295,9 @@ export function SubmissionForm() {
                     handleInputChange("sendNoticeToAuthor", !!checked)
                   }
                 />
-                <Label htmlFor="sendNoticeToAuthor">Send Notice To Author</Label>
+                <Label htmlFor="sendNoticeToAuthor">
+                  Send Notice To Author
+                </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -273,39 +313,39 @@ export function SubmissionForm() {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="QuestionOne">
-                  Question One *
-                </Label>
+                <Label htmlFor="QuestionOne">Question One *</Label>
                 <Textarea
                   id="QuestionOne"
                   value={formData.QuestionOne}
-                  onChange={(e) => handleInputChange("QuestionOne", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("QuestionOne", e.target.value)
+                  }
                   placeholder="Explain in detail why you believe the content on the above URL(s) is unlawful..."
                   className="min-h-[100px]"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="QuestionTwo">
-                  Question Two *
-                </Label>
+                <Label htmlFor="QuestionTwo">Question Two *</Label>
                 <Textarea
                   id="QuestionTwo"
                   value={formData.QuestionTwo}
-                  onChange={(e) => handleInputChange("QuestionTwo", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("QuestionTwo", e.target.value)
+                  }
                   placeholder="Quote the exact text from each URL above that you believe infringes on your rights..."
                   className="min-h-[100px]"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="QuestionThree">
-                  Question Three *
-                </Label>
+                <Label htmlFor="QuestionThree">Question Three *</Label>
                 <Textarea
                   id="QuestionThree"
                   value={formData.QuestionThree}
-                  onChange={(e) => handleInputChange("QuestionThree", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("QuestionThree", e.target.value)
+                  }
                   placeholder="Provide a detailed description of the infringing content..."
                   className="min-h-[100px]"
                   required
@@ -324,7 +364,9 @@ export function SubmissionForm() {
                   required
                 />
                 <Label htmlFor="confirmForm" className="text-sm">
-                  I swear, under penalty of perjury, that the information in this notification is accurate and that I am authorized to report this alleged violation. *
+                  I swear, under penalty of perjury, that the information in
+                  this notification is accurate and that I am authorized to
+                  report this alleged violation. *
                 </Label>
               </div>
             </div>
@@ -338,7 +380,10 @@ export function SubmissionForm() {
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting || !formData.confirmForm}>
+            <Button
+              type="submit"
+              disabled={isSubmitting || !formData.confirmForm}
+            >
               {isSubmitting ? (
                 <>
                   <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />

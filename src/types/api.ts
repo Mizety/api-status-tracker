@@ -1,5 +1,10 @@
-
-export type FormStatus = "pending" | "completed" | "failed" | "retry" | "queued" | "requeued";
+export type FormStatus =
+  | "pending"
+  | "completed"
+  | "failed"
+  | "retry"
+  | "queued"
+  | "requeued";
 
 export interface HealthCheckResultDto {
   error: Record<string, any>;
@@ -65,4 +70,5 @@ export interface UpdateFormStatusDto {
 export interface SubmissionParams {
   page: number;
   limit: number;
+  search?: string;
 }

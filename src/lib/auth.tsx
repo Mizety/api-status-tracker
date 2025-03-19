@@ -1,5 +1,11 @@
-
-import { useState, useEffect, createContext, useContext, ReactNode } from "react";
+import {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  ReactNode,
+} from "react";
+import { checkIfCredsAreValid } from "./check-creds";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -11,7 +17,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  
+
   useEffect(() => {
     // Check if user is already authenticated
     const auth = localStorage.getItem("auth");
@@ -20,23 +26,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const login = async (username: string, password: string): Promise<boolean> => {
-    // In a real app, we'd call an API to verify credentials
-    // Here we're checking against environment variables
-    const storedUsername = import.meta.env.VITE_AUTH_USERNAME;
-    const storedPassword = import.meta.env.VITE_AUTH_PASSWORD;
-    
-    if (username === storedUsername && password === storedPassword) {
-      localStorage.setItem("auth", "true");
+  const login = async (apiUrl: string, apiKey: string): Promise<boolean> => {
+    const isValid = await checkIfCredsAreValid(apiUrl, apiKey);
+    if (isValid) {
+      // set the auth to true
+      // need to wait for localStorage to be set
+      await new Promise((resolve) => {
+        localStorage.setItem("auth", "true");
+        localStorage.setItem("apiUrl", apiUrl);
+        localStorage.setItem("apiKey", apiKey);
+        resolve(true);
+      });
       setIsAuthenticated(true);
       return true;
     }
-    
+
     return false;
   };
 
   const logout = () => {
     localStorage.removeItem("auth");
+    localStorage.removeItem("apiUrl");
+    localStorage.removeItem("apiKey");
     setIsAuthenticated(false);
   };
 

@@ -1,13 +1,28 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import { getHealth, getSubmissions } from "@/lib/api";
-import { PlusIcon, LayoutDashboardIcon, LogOutIcon, FileTextIcon, FileIcon, ServerIcon, CheckIcon, XIcon, RefreshCwIcon, AlertCircleIcon } from "lucide-react";
+import { getHealth, getSubmissions, submissionStats } from "@/lib/api";
+import {
+  PlusIcon,
+  LayoutDashboardIcon,
+  LogOutIcon,
+  FileTextIcon,
+  FileIcon,
+  CheckIcon,
+  XIcon,
+  RefreshCwIcon,
+  AlertCircleIcon,
+} from "lucide-react";
 import { Form, HealthCheckResultDto } from "@/types/api";
 
 const Dashboard = () => {
@@ -35,29 +50,23 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     setIsLoading(true);
     try {
-      const [healthData, submissionsData] = await Promise.all([
+      const [healthData, submissionsData, statsData] = await Promise.all([
         getHealth(),
         getSubmissions({ page: 1, limit: 5 }),
+        submissionStats(),
       ]);
 
       setHealth(healthData);
       setRecentSubmissions(submissionsData.data);
 
-      // Calculate counts
       const statusCounts = {
-        total: submissionsData.meta.total,
-        pending: 0,
-        completed: 0,
-        failed: 0,
-        queued: 0,
+        total: statsData.total,
+        pending: statsData.pending,
+        completed: statsData.completed,
+        failed: statsData.failed,
+        queued: statsData.queued,
+        requeued: statsData.requeued,
       };
-
-      submissionsData.data.forEach((submission) => {
-        if (submission.status === "pending") statusCounts.pending++;
-        if (submission.status === "completed") statusCounts.completed++;
-        if (submission.status === "failed") statusCounts.failed++;
-        if (submission.status === "queued" || submission.status === "requeued") statusCounts.queued++;
-      });
 
       setCounts(statusCounts);
     } catch (error) {
@@ -92,10 +101,16 @@ const Dashboard = () => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <LayoutDashboardIcon className="h-6 w-6 text-primary" />
-              <h1 className="ml-2 text-xl font-semibold">Form Submission Dashboard</h1>
+              <h1 className="ml-2 text-xl font-semibold">
+                Form Submission Dashboard
+              </h1>
             </div>
             <div className="flex items-center">
-              <Button variant="ghost" onClick={handleLogout} className="flex items-center">
+              <Button
+                variant="ghost"
+                onClick={handleLogout}
+                className="flex items-center"
+              >
                 <LogOutIcon className="h-4 w-4 mr-2" />
                 Logout
               </Button>
@@ -108,7 +123,9 @@ const Dashboard = () => {
         <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold">Dashboard Overview</h1>
-            <p className="text-gray-500">View and manage your form submissions</p>
+            <p className="text-gray-500">
+              View and manage your form submissions
+            </p>
           </div>
           <div className="flex gap-4">
             <Button asChild>
@@ -129,11 +146,15 @@ const Dashboard = () => {
         <div className="grid gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
           <Card className="shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Submissions</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Submissions
+              </CardTitle>
               <FileIcon className="h-4 w-4 text-gray-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{isLoading ? "..." : counts.total}</div>
+              <div className="text-2xl font-bold">
+                {isLoading ? "..." : counts.total}
+              </div>
               <p className="text-xs text-gray-500 mt-1">All form submissions</p>
             </CardContent>
           </Card>
@@ -143,7 +164,9 @@ const Dashboard = () => {
               <RefreshCwIcon className="h-4 w-4 text-status-pending" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{isLoading ? "..." : counts.pending}</div>
+              <div className="text-2xl font-bold">
+                {isLoading ? "..." : counts.pending}
+              </div>
               <p className="text-xs text-gray-500 mt-1">Awaiting processing</p>
             </CardContent>
           </Card>
@@ -153,8 +176,12 @@ const Dashboard = () => {
               <CheckIcon className="h-4 w-4 text-status-completed" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{isLoading ? "..." : counts.completed}</div>
-              <p className="text-xs text-gray-500 mt-1">Successfully processed</p>
+              <div className="text-2xl font-bold">
+                {isLoading ? "..." : counts.completed}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Successfully processed
+              </p>
             </CardContent>
           </Card>
           <Card className="shadow-sm hover:shadow-md transition-shadow">
@@ -163,7 +190,9 @@ const Dashboard = () => {
               <XIcon className="h-4 w-4 text-status-failed" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{isLoading ? "..." : counts.failed}</div>
+              <div className="text-2xl font-bold">
+                {isLoading ? "..." : counts.failed}
+              </div>
               <p className="text-xs text-gray-500 mt-1">Require attention</p>
             </CardContent>
           </Card>
@@ -173,13 +202,18 @@ const Dashboard = () => {
           <Card className="shadow-sm hover:shadow-md transition-shadow md:col-span-2">
             <CardHeader>
               <CardTitle>Recent Submissions</CardTitle>
-              <CardDescription>The 5 most recent form submissions</CardDescription>
+              <CardDescription>
+                The 5 most recent form submissions
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {isLoading ? (
                 <div className="space-y-3">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-12 bg-gray-100 rounded animate-pulse"></div>
+                    <div
+                      key={i}
+                      className="h-12 bg-gray-100 rounded animate-pulse"
+                    ></div>
                   ))}
                 </div>
               ) : recentSubmissions.length === 0 ? (
@@ -187,7 +221,9 @@ const Dashboard = () => {
                   <FileIcon className="h-12 w-12 mx-auto text-gray-300" />
                   <p className="mt-2">No submissions yet</p>
                   <Button asChild variant="outline" className="mt-4">
-                    <Link to="/new-submission">Create your first submission</Link>
+                    <Link to="/new-submission">
+                      Create your first submission
+                    </Link>
                   </Button>
                 </div>
               ) : (
@@ -240,7 +276,10 @@ const Dashboard = () => {
               {isLoading ? (
                 <div className="space-y-3">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-8 bg-gray-100 rounded animate-pulse"></div>
+                    <div
+                      key={i}
+                      className="h-8 bg-gray-100 rounded animate-pulse"
+                    ></div>
                   ))}
                 </div>
               ) : health ? (
@@ -251,12 +290,16 @@ const Dashboard = () => {
                       {health.status === 200 ? (
                         <>
                           <div className="w-2 h-2 rounded-full bg-status-completed mr-2"></div>
-                          <span className="text-sm text-status-completed">Online</span>
+                          <span className="text-sm text-status-completed">
+                            Online
+                          </span>
                         </>
                       ) : (
                         <>
                           <div className="w-2 h-2 rounded-full bg-status-failed mr-2"></div>
-                          <span className="text-sm text-status-failed">Issues</span>
+                          <span className="text-sm text-status-failed">
+                            Issues
+                          </span>
                         </>
                       )}
                     </div>
