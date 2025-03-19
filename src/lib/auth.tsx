@@ -27,6 +27,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (apiUrl: string, apiKey: string): Promise<boolean> => {
+    if (apiUrl.endsWith("/")) {
+      apiUrl = apiUrl.slice(0, -1);
+    }
     const isValid = await checkIfCredsAreValid(apiUrl, apiKey);
     if (isValid) {
       // set the auth to true

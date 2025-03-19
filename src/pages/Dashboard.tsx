@@ -22,6 +22,8 @@ import {
   XIcon,
   RefreshCwIcon,
   AlertCircleIcon,
+  Waypoints,
+  RefreshCcwDotIcon,
 } from "lucide-react";
 import { Form, HealthCheckResultDto } from "@/types/api";
 
@@ -37,6 +39,7 @@ const Dashboard = () => {
     completed: 0,
     failed: 0,
     queued: 0,
+    requeued: 0,
   });
 
   useEffect(() => {
@@ -151,7 +154,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="grid gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 mb-8 md:grid-cols-2 lg:grid-cols-3">
           <Card className="shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">
@@ -168,6 +171,32 @@ const Dashboard = () => {
           </Card>
           <Card className="shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Queued</CardTitle>
+              <Waypoints className="h-4 w-4 text-gray-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {isLoading ? "..." : counts.queued}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Awaiting processing</p>
+            </CardContent>
+          </Card>
+          <Card className="shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Requeued</CardTitle>
+              <RefreshCcwDotIcon className="h-4 w-4 text-gray-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {isLoading ? "..." : counts.requeued}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Requeued submissions{" "}
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Pending</CardTitle>
               <RefreshCwIcon className="h-4 w-4 text-status-pending" />
             </CardHeader>
@@ -175,7 +204,7 @@ const Dashboard = () => {
               <div className="text-2xl font-bold">
                 {isLoading ? "..." : counts.pending}
               </div>
-              <p className="text-xs text-gray-500 mt-1">Awaiting processing</p>
+              <p className="text-xs text-gray-500 mt-1">Being processed</p>
             </CardContent>
           </Card>
           <Card className="shadow-sm hover:shadow-md transition-shadow">
@@ -192,6 +221,7 @@ const Dashboard = () => {
               </p>
             </CardContent>
           </Card>
+
           <Card className="shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Failed</CardTitle>
