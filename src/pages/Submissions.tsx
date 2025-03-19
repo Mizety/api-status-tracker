@@ -10,12 +10,11 @@ import { toast } from "sonner";
 import { getSubmissions } from "@/lib/api";
 import { Form, SubmissionParams } from "@/types/api";
 import {
-  ArrowLeftIcon,
-  FileTextIcon,
   LayoutDashboardIcon,
   PlusIcon,
   RefreshCwIcon,
   SearchIcon,
+  FileIcon,
 } from "lucide-react";
 import {
   Select,
@@ -24,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { exportSubmissions } from "@/lib/utils";
 const Submissions = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -78,6 +77,13 @@ const Submissions = () => {
   };
 
   const columns = [
+    {
+      id: "id",
+      header: "ID",
+      cell: (submission: Form) => submission.id,
+      className: "text-left",
+    },
+
     {
       id: "name",
       header: "Name",
@@ -156,24 +162,24 @@ const Submissions = () => {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div className="flex flex-row flex-wrap justify-between items-start sm:items-center gap-4 mb-6">
           <form
             onSubmit={handleSearch}
-            className="flex w-full max-w-sm items-center space-x-2"
+            className="flex  w-full max-w-sm items-center gap-2"
           >
             <Input
               type="search"
               placeholder="Search submissions..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1"
+              className="flex-1 min-w-20"
             />
             <Button type="submit" size="icon">
               <SearchIcon className="h-4 w-4" />
               <span className="sr-only">Search</span>
             </Button>
           </form>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Button
               variant="outline"
               size="sm"
@@ -194,7 +200,7 @@ const Submissions = () => {
                 setLimit(parseInt(value));
               }}
             >
-              <SelectTrigger className="w-24">
+              <SelectTrigger className="w-20">
                 <SelectValue placeholder="Select a limit" />
               </SelectTrigger>
               <SelectContent>
@@ -206,6 +212,26 @@ const Submissions = () => {
                 <SelectItem value="100">100</SelectItem>
               </SelectContent>
             </Select>
+
+            {/* Export button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                exportSubmissions(submissions, "csv");
+              }}
+            >
+              <FileIcon className="h-4 w-4 " />
+              Export CSV
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportSubmissions(submissions, "excel")}
+            >
+              <FileIcon className="h-4 w-4 " />
+              Export Excel
+            </Button>
           </div>
         </div>
 
