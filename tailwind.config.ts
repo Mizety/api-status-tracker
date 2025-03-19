@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				status: {
+					pending: '#FFC107',
+					completed: '#4CAF50',
+					failed: '#F44336',
+					retry: '#9C27B0',
+					queued: '#2196F3',
+					requeued: '#00BCD4',
 				}
 			},
 			borderRadius: {
@@ -84,11 +93,56 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					from: {
+						opacity: '0'
+					},
+					to: {
+						opacity: '1'
+					}
+				},
+				'fade-out': {
+					from: {
+						opacity: '1'
+					},
+					to: {
+						opacity: '0'
+					}
+				},
+				'slide-in-right': {
+					from: {
+						transform: 'translateX(100%)'
+					},
+					to: {
+						transform: 'translateX(0)'
+					}
+				},
+				'slide-out-left': {
+					from: {
+						transform: 'translateX(0)'
+					},
+					to: {
+						transform: 'translateX(-100%)'
+					}
+				},
+				'spin-slow': {
+					from: {
+						transform: 'rotate(0deg)'
+					},
+					to: {
+						transform: 'rotate(360deg)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.3s ease-out',
+				'fade-out': 'fade-out 0.3s ease-out',
+				'slide-in-right': 'slide-in-right 0.3s ease-out',
+				'slide-out-left': 'slide-out-left 0.3s ease-out',
+				'spin-slow': 'spin-slow 3s linear infinite'
 			}
 		}
 	},
