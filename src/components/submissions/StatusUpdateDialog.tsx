@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -84,18 +83,19 @@ export function StatusUpdateDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md w-[90%] mx-auto rounded-md">
         <DialogHeader>
           <DialogTitle>Update Submission Status</DialogTitle>
           <DialogDescription>
-            Current status: <span className="font-medium">{currentStatus || "None"}</span>
+            Current status:{" "}
+            <span className="font-medium">{currentStatus || "None"}</span>
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="status">New Status</Label>
-            <Select 
-              value={status} 
+            <Select
+              value={status}
               onValueChange={(value: string) => setStatus(value as FormStatus)}
             >
               <SelectTrigger>
@@ -122,7 +122,7 @@ export function StatusUpdateDialog({
             />
           </div>
         </div>
-        <DialogFooter className="flex space-x-2 sm:space-x-0">
+        <DialogFooter className="flex justify-between gap-2">
           <Button
             type="button"
             variant="outline"

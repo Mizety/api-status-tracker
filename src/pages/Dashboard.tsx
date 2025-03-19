@@ -100,10 +100,16 @@ const Dashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <LayoutDashboardIcon className="h-6 w-6 text-primary" />
-              <h1 className="ml-2 text-xl font-semibold">
-                Form Submission Dashboard
-              </h1>
+              <Button
+                variant="ghost"
+                onClick={() => navigate("/dashboard")}
+                className="mr-2"
+              >
+                <LayoutDashboardIcon className="h-6 w-6 text-primary" />
+                <h1 className="ml-2 text-sm md:text-xl font-semibold">
+                  FS Dashboard
+                </h1>
+              </Button>
             </div>
             <div className="flex items-center">
               <Button
@@ -122,16 +128,18 @@ const Dashboard = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold">Dashboard Overview</h1>
-            <p className="text-gray-500">
+            <h1 className="text-md md:text-2xl font-bold">
+              Dashboard Overview
+            </h1>
+            <p className="text-gray-500 text-sm md:text-base">
               View and manage your form submissions
             </p>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-wrap">
             <Button asChild>
               <Link to="/new-submission" className="flex items-center">
                 <PlusIcon className="h-4 w-4 mr-2" />
-                New Submission
+                {window.innerWidth < 768 ? "New" : "New Submission"}
               </Link>
             </Button>
             <Button asChild variant="outline">

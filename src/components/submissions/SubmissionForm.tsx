@@ -123,28 +123,16 @@ export function SubmissionForm() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate("/submissions")}
-          className="mr-2"
-        >
-          <ArrowLeftIcon className="h-5 w-5" />
-        </Button>
-        <h1 className="text-2xl font-bold">New Submission</h1>
-      </div>
-
-      <Card className="form-card shadow-lg">
-        <CardHeader>
+    <div className="space-y-0 animate-fade-in">
+      <Card className="form-card shadow-lg px-2 md:px-4 py-2">
+        <CardHeader className="px-2 md:px-4">
           <CardTitle>Create New Submission</CardTitle>
           <CardDescription>
             Fill out the form below to create a new submission.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 px-2 md:px-4">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="fullLegalName">Full Legal Name *</Label>

@@ -1,12 +1,24 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form } from "@/types/api";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui-custom/StatusBadge";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { AlertCircleIcon, ArrowLeftIcon, ClockIcon, RefreshCwIcon, Settings } from "lucide-react";
+import {
+  AlertCircleIcon,
+  ArrowLeftIcon,
+  ClockIcon,
+  RefreshCwIcon,
+  Settings,
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { StatusUpdateDialog } from "./StatusUpdateDialog";
 import { retrySubmission } from "@/lib/api";
@@ -17,7 +29,10 @@ interface SubmissionDetailsProps {
   onRefresh: () => void;
 }
 
-export function SubmissionDetails({ submission, onRefresh }: SubmissionDetailsProps) {
+export function SubmissionDetails({
+  submission,
+  onRefresh,
+}: SubmissionDetailsProps) {
   const [showStatusDialog, setShowStatusDialog] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
   const navigate = useNavigate();
@@ -51,8 +66,8 @@ export function SubmissionDetails({ submission, onRefresh }: SubmissionDetailsPr
           <h1 className="text-2xl font-bold">Submission Details</h1>
         </div>
         <div className="flex items-center gap-2">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => setShowStatusDialog(true)}
             className="transition-all"
           >
@@ -74,14 +89,19 @@ export function SubmissionDetails({ submission, onRefresh }: SubmissionDetailsPr
 
       <Card className="shadow-md transition-all hover:shadow-lg">
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <div>
-              <CardTitle className="text-xl">Submission Overview</CardTitle>
+              <CardTitle className="text-md md:text-xl">
+                Submission Overview
+              </CardTitle>
               <CardDescription className="text-sm text-gray-500">
                 Submitted by {submission.email}
               </CardDescription>
             </div>
-            <StatusBadge status={submission.status} className="px-3 py-1 text-sm" />
+            <StatusBadge
+              status={submission.status}
+              className="px-3 py-1 text-sm"
+            />
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -108,23 +128,33 @@ export function SubmissionDetails({ submission, onRefresh }: SubmissionDetailsPr
                 <ClockIcon className="h-4 w-4 mr-1.5 text-gray-400" />
                 <span>
                   {new Date(submission.createdAt).toLocaleString()} ({" "}
-                  {formatDistanceToNow(new Date(submission.createdAt), { addSuffix: true })})
+                  {formatDistanceToNow(new Date(submission.createdAt), {
+                    addSuffix: true,
+                  })}
+                  )
                 </span>
               </div>
             </div>
             <div className="space-y-1.5">
-              <h3 className="text-sm font-medium text-gray-500">Last Updated</h3>
+              <h3 className="text-sm font-medium text-gray-500">
+                Last Updated
+              </h3>
               <div className="flex items-center text-sm">
                 <ClockIcon className="h-4 w-4 mr-1.5 text-gray-400" />
                 <span>
                   {new Date(submission.updatedAt).toLocaleString()} ({" "}
-                  {formatDistanceToNow(new Date(submission.updatedAt), { addSuffix: true })})
+                  {formatDistanceToNow(new Date(submission.updatedAt), {
+                    addSuffix: true,
+                  })}
+                  )
                 </span>
               </div>
             </div>
             {submission.retryAtempts !== null && (
               <div className="space-y-1.5">
-                <h3 className="text-sm font-medium text-gray-500">Retry Attempts</h3>
+                <h3 className="text-sm font-medium text-gray-500">
+                  Retry Attempts
+                </h3>
                 <p>{submission.retryAtempts}</p>
               </div>
             )}
@@ -137,7 +167,9 @@ export function SubmissionDetails({ submission, onRefresh }: SubmissionDetailsPr
                   <AlertCircleIcon className="h-5 w-5 text-red-400" />
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">Error Message</h3>
+                  <h3 className="text-sm font-medium text-red-800">
+                    Error Message
+                  </h3>
                   <div className="mt-2 text-sm text-red-700">
                     <p>{submission.error}</p>
                   </div>
@@ -150,10 +182,12 @@ export function SubmissionDetails({ submission, onRefresh }: SubmissionDetailsPr
 
           <div className="space-y-4">
             <h3 className="font-medium">Form Details</h3>
-            
+
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Full Legal Name</h4>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Full Legal Name
+                </h4>
                 <p>{submission.fullLegalName}</p>
               </div>
               <div className="space-y-1.5">
@@ -161,45 +195,63 @@ export function SubmissionDetails({ submission, onRefresh }: SubmissionDetailsPr
                 <p>{submission.email}</p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Country of Residence</h4>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Country of Residence
+                </h4>
                 <p>{submission.countryOfResidence}</p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Company Name</h4>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Company Name
+                </h4>
                 <p>{submission.CompanyName}</p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Company You Represent</h4>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Company You Represent
+                </h4>
                 <p>{submission.CompanyYouRepresent}</p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Child Abuse Content</h4>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Child Abuse Content
+                </h4>
                 <p>{submission.isChildAbuseContent ? "Yes" : "No"}</p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Remove Child Abuse Content</h4>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Remove Child Abuse Content
+                </h4>
                 <p>{submission.removeChildAbuseContent ? "Yes" : "No"}</p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Send Notice To Author</h4>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Send Notice To Author
+                </h4>
                 <p>{submission.sendNoticeToAuthor ? "Yes" : "No"}</p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Related To Media</h4>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Related To Media
+                </h4>
                 <p>{submission.isRelatedToMedia ? "Yes" : "No"}</p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Confirm Form</h4>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Confirm Form
+                </h4>
                 <p>{submission.confirmForm ? "Yes" : "No"}</p>
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <h4 className="text-sm font-medium text-gray-500">Infringing URLs</h4>
+              <h4 className="text-sm font-medium text-gray-500">
+                Infringing URLs
+              </h4>
               <ul className="list-disc list-inside space-y-1">
                 {submission.InfringingUrls.map((url, index) => (
                   <li key={index} className="text-sm break-all">
-                    <a 
+                    <a
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -214,16 +266,28 @@ export function SubmissionDetails({ submission, onRefresh }: SubmissionDetailsPr
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Question One</h4>
-                <p className="text-sm whitespace-pre-wrap">{submission.QuestionOne}</p>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Question One
+                </h4>
+                <p className="text-sm whitespace-pre-wrap">
+                  {submission.QuestionOne}
+                </p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Question Two</h4>
-                <p className="text-sm whitespace-pre-wrap">{submission.QuestionTwo}</p>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Question Two
+                </h4>
+                <p className="text-sm whitespace-pre-wrap">
+                  {submission.QuestionTwo}
+                </p>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-sm font-medium text-gray-500">Question Three</h4>
-                <p className="text-sm whitespace-pre-wrap">{submission.QuestionThree}</p>
+                <h4 className="text-sm font-medium text-gray-500">
+                  Question Three
+                </h4>
+                <p className="text-sm whitespace-pre-wrap">
+                  {submission.QuestionThree}
+                </p>
               </div>
             </div>
 
@@ -234,10 +298,7 @@ export function SubmissionDetails({ submission, onRefresh }: SubmissionDetailsPr
           </div>
         </CardContent>
         <CardFooter className="flex justify-end space-x-2">
-          <Button
-            variant="outline"
-            onClick={() => navigate("/submissions")}
-          >
+          <Button variant="outline" onClick={() => navigate("/submissions")}>
             Back to Submissions
           </Button>
         </CardFooter>

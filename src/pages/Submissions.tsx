@@ -12,6 +12,7 @@ import { Form, SubmissionParams } from "@/types/api";
 import {
   ArrowLeftIcon,
   FileTextIcon,
+  LayoutDashboardIcon,
   PlusIcon,
   RefreshCwIcon,
   SearchIcon,
@@ -117,24 +118,27 @@ const Submissions = () => {
     <div className="min-h-screen bg-gray-50 animate-fade-in">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between h-16 items-center ">
             <div className="flex items-center">
               <Button
                 variant="ghost"
-                size="icon"
                 onClick={() => navigate("/dashboard")}
                 className="mr-2"
               >
-                <ArrowLeftIcon className="h-5 w-5" />
+                <LayoutDashboardIcon className="h-6 w-6 text-primary" />
+                <h1 className="ml-2 text-sm md:text-xl font-semibold">
+                  FS Dashboard
+                </h1>
               </Button>
-              <FileTextIcon className="h-6 w-6 text-primary" />
-              <h1 className="ml-2 text-xl font-semibold">Submissions</h1>
             </div>
             <div className="flex items-center">
               <Button asChild variant="default" className="ml-4">
-                <Link to="/new-submission" className="flex items-center">
+                <Link
+                  to="/new-submission"
+                  className="flex items-center text-sm md:text-base"
+                >
                   <PlusIcon className="h-4 w-4 mr-2" />
-                  New Submission
+                  {window.innerWidth < 768 ? "New" : "New Submission"}
                 </Link>
               </Button>
             </div>
@@ -144,8 +148,10 @@ const Submissions = () => {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-2">All Submissions</h1>
-          <p className="text-gray-500">
+          <h1 className="text-md md:text-2xl font-bold mb-2">
+            All Submissions
+          </h1>
+          <p className="text-gray-500 text-sm md:text-base">
             Showing {submissions.length} of {pagination.total} total submissions
           </p>
         </div>
